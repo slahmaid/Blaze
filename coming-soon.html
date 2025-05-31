@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blaze</title>
+    <link rel="icon" type="image/png" href="images/letter-b.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .icon {
+            width: 50px;
+            height: auto;
+            margin-top: 40px;
+            animation: fadeIn 1s ease-in 0.5s backwards, rotate 3s linear infinite;
+            filter: brightness(0) invert(1);
+        }
+
+        .form-container {
+            margin-top: 40px;
+            animation: fadeIn 1s ease-in 0.7s backwards;
+        }
+
+        .notification-text {
+            color: #e0e0e0;
+            font-family: 'poppins';
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .prize-text {
+            color: #4ecdc4;
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .email-form {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .email-input {
+            padding: 12px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 1rem;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .email-input:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .email-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .submit-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ffffff;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .submit-btn.loading .spinner {
+            display: block;
+        }
+
+        .submit-btn.loading span {
+            visibility: hidden;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(78, 205, 196, 0.2);
+            color: #4ecdc4;
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .icon {
+                width: 35px;
+            }
+
+            .email-form {
+                flex-direction: column;
+                padding: 0 20px;
+            }
+
+            .submit-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Concours Facebook</h1>
+    <img src="images/letter-b.png" alt="Lettre B" class="icon">
+    
+    <div class="form-container">
+        <p class="notification-text">Participez à notre concours exclusif sur Facebook ! Inscrivez-vous avec votre email pour avoir une chance de gagner.</p>
+        <p class="prize-text">Un gagnant sera tiré au sort !</p>
+        <form class="email-form" id="notifyForm">
+            <input type="email" class="email-input" placeholder="Votre email pour participer" required>
+            <button type="submit" class="submit-btn">
+                <span>Participer</span>
+                <div class="spinner"></div>
+            </button>
+        </form>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('notifyForm');
+        const submitBtn = form.querySelector('.submit-btn');
+        const messageDiv = document.getElementById('message');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = form.querySelector('input[type="email"]').value;
+            
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+            messageDiv.className = 'message';
+            messageDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbyn0WnDWX4R98IJgMxFgpjksTxBC7nM57mHpOSF52RQqusBFbemTYGGpg0cGxwgpq-JQQ/exec', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    body: JSON.stringify({ email }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                messageDiv.textContent = 'Merci pour votre participation ! Bonne chance !';
+                messageDiv.className = 'message success';
+                form.reset();
+                
+            } catch (error) {
+                console.error('Form submission error:', error);
+                messageDiv.textContent = 'Une erreur est survenue. Veuillez réessayer.';
+                messageDiv.className = 'message error';
+            } finally {
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>FAQ - Blaze</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" type="image/png" href="images/letter-b.png">
+
+  <!-- Webflow CSS -->
+  <link rel="stylesheet"
+        href="https://assets-global.website-files.com/61defec4a021d8fe954c11bd/css/gettala-185482bb417c536ab12d8b2010fe52c.webflow.dba26a50a.css" />
+  <!-- Font Awesome for arrows -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" />
+  <!-- Poppins Font -->
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" />
+
+  <style>
+    /* General Styles */
+    :root {
+      --primary-color: #000000;
+      --secondary-color: #333333;
+      --accent-color: #4CAF50;
+      --background-color: #ffffff;
+      --text-color: #000000;
+      --transition-speed: 0.3s;
+    }
+
+    body {
+      overflow-x: hidden;
+      background: var(--background-color);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease;
+    }
+
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #000;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Page Transition */
+    .page-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 9998;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.6s ease;
+    }
+
+    .page-transition.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Back to Top Button */
+    .back-to-top {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: #000;
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 999;
+    }
+
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Scroll Progress Bar */
+    .scroll-progress-container {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 4px;
+      height: 100%;
+      background: #f1f1f1;
+      z-index: 1000;
+    }
+
+    .scroll-progress-bar {
+      width: 100%;
+      background: #000;
+      height: 0;
+      transition: height 0.1s ease;
+    }
+
+    /* Navbar */
+    .navbar {
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      height: 80px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      z-index: 100;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand {
+      margin-right: auto;
+      white-space: nowrap;
+    }
+
+    .brand .logo-text {
+      font-family: 'California', sans-serif !important;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #000000;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: pulse 3s infinite;
+    }
+
+    .menu-button,
+    .cart-icon-container {
+      margin-left: 20px;
+    }
+
+    .cart-icon-container {
+      position: relative;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: #ff0000;
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .menu-button .line-1,
+    .menu-button .line-2 {
+      width: 25px;
+      height: 2px;
+      background-color: #000000;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    .menu-button.w--open .line-1,
+    .menu-button.w--open .line-2 {
+      background-color: #232025 !important;
+    }
+
+    .navbar:has(.menu-button.w--open) .logo-text {
+      color: #232025 !important;
+    }
+
+    .menu-title {
+      opacity: 0;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.7);
+      animation: fadeDown 0.5s ease-out forwards;
+      animation-delay: 0.5s;
+    }
+
+    /* Nav underline */
+    .banana-link,
+    .Nouvelle {
+      font-family: 'Domaine Display', sans-serif;
+      font-weight: 600 !important;
+      position: relative;
+    }
+
+    .banana-link::after,
+    .Nouvelle::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #000;
+      transition: width 1.5s ease-out;
+    }
+
+    .banana-link:hover::after,
+    .Nouvelle:hover::after {
+      width: 100%;
+    }
+
+    .nav-items-2 {
+      display: inline;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .navbar {
+        height: 100px;
+        padding: 0 15px;
+      }
+      .brand .logo-text {
+        font-size: 1.8rem !important;
+      }
+      .cart-icon-container .bi-cart2 {
+        font-size: 2rem;
+      }
+      .menu-button .line-1,
+      .menu-button .line-2 {
+        width: 30px;
+        height: 3px;
+      }
+      .menu-button {
+        width: 40px;
+        height: 40px;
+      }
+    }
+
+    @media (max-width: 479px) {
+      .navbar {
+        height: 90px;
+      }
+      .brand .logo-text {
+        font-size: 1.5rem !important;
+      }
+      .cart-icon-container .bi-cart2 {
+        font-size: 1.8rem;
+      }
+      .menu-button .line-1,
+      .menu-button .line-2 {
+        width: 25px;
+        height: 2px;
+      }
+      .menu-button {
+        width: 35px;
+        height: 35px;
+      }
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 100px 20px;
+      background: #f8f8f8;
+      margin-top: 60px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .faq-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #000, transparent);
+    }
+
+    .faq-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .faq-title {
+      font-family: 'Domaine Display', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      text-align: center;
+      color: #000;
+      margin-bottom: 50px;
+      position: relative;
+      padding-bottom: 20px;
+    }
+
+    .faq-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: #000;
+    }
+
+    .faq-category {
+      margin-bottom: 40px;
+    }
+
+    .faq-category-title {
+      font-family: 'Domaine Display', sans-serif;
+      font-size: 1.8rem;
+      color: #000;
+      margin-bottom: 25px;
+      padding-left: 20px;
+      border-left: 4px solid #000;
+    }
+
+    .faq-item {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 12px;
+      margin: 0 auto 20px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateY(0);
+      max-width: 800px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .faq-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .faq-question {
+      padding: 25px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      background: #fff;
+      text-align: left;
+      position: relative;
+    }
+
+    .faq-question::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 4px;
+      background: #000;
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-question:hover::before {
+      transform: scaleY(1);
+    }
+
+    .faq-question:hover {
+      background: #f8f8f8;
+      padding-left: 30px;
+    }
+
+    .faq-answer {
+      padding: 0 25px;
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #666;
+      transform: translateY(-10px);
+      opacity: 0;
+      text-align: left;
+    }
+
+    .faq-item.active .faq-answer {
+      padding: 25px;
+      max-height: 1000px;
+      transform: translateY(0);
+      opacity: 1;
+      background: #f8f8f8;
+    }
+
+    .faq-item.active .faq-question {
+      border-bottom: 2px solid #000;
+      background: #f8f8f8;
+    }
+
+    .faq-icon {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      color: #000;
+      font-size: 1.2rem;
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(180deg);
+    }
+
+    .faq-question:hover .faq-icon {
+      transform: scale(1.2);
+    }
+
+    .faq-search {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+
+    .faq-search input {
+      width: 100%;
+      padding: 15px 20px;
+      padding-left: 50px;
+      border: 2px solid #000;
+      border-radius: 30px;
+        font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .faq-search input:focus {
+      outline: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .faq-search i {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #000;
+      font-size: 1.2rem;
+    }
+
+    .faq-categories {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .faq-category-btn {
+      padding: 10px 20px;
+      border: 2px solid #000;
+      border-radius: 30px;
+      background: #fff;
+      color: #000;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .faq-category-btn:hover,
+    .faq-category-btn.active {
+      background: #000;
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    /* Footer Styles */
+    .footer {
+      background: #F1F1F2;
+      padding: 80px 20px 40px;
+      margin-top: 40px;
+      border-top: 3px solid #000;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .footer-logo-container {
+      text-align: center;
+      padding: 30px;
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'California', sans-serif;
+      font-size: 2.5rem;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 15px;
+    }
+
+    .footer-text {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .social-link {
+      width: 45px;
+      height: 45px;
+      border: 2px solid #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .social-link:hover {
+      background: #000;
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .footer-columns-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .footer-column {
+      background: #fff;
+      border: 2px solid #000;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+
+    .footer-column:hover {
+      transform: translateY(-5px);
+    }
+
+    .footer-title {
+      font-family: 'Domaine Display', sans-serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-link {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1rem;
+      color: #666;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      padding: 12px 20px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      text-align: center;
+      background: #fff;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .footer-link:hover {
+      color: #fff;
+      background: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .footer-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      color: #666;
+      padding: 8px;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .contact-item:hover {
+      background: #f8f8f8;
+      border-color: #000;
+      transform: translateX(5px);
+    }
+
+    .contact-icon {
+      font-size: 1.3rem;
+      color: #000;
+    }
+
+    #footer-signup-form {
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #footer-signup-form input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #footer-signup-form input:focus {
+      outline: none;
+      border-color: #666;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    #footer-signup-form input::placeholder {
+      color: #999;
+    }
+
+    #footer-signup-form button {
+      width: 100%;
+      padding: 10px 15px;
+      background: #000;
+      color: #fff;
+      border: 2px solid #000;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    #footer-signup-form button:hover {
+      background: #fff;
+      color: #000;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .footer-bottom {
+      margin-top: 30px;
+      padding-top: 15px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .footer-bottom-text {
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #000000;
+    }
+
+    @media (max-width: 991px) {
+      .footer-columns-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .footer {
+        padding: 40px 20px 20px;
+      }
+      .footer-container {
+        gap: 30px;
+      }
+      .footer-logo-container {
+        padding: 20px;
+      }
+      .footer-logo {
+        font-size: 2rem;
+      }
+      .footer-text {
+        font-size: 0.9rem;
+      }
+      .footer-columns-container {
+        grid-template-columns: 1fr;
+      }
+      .footer-column {
+        padding: 20px;
+      }
+      .footer-title {
+        font-size: 1.2rem;
+      }
+      .footer-link,
+      .contact-item {
+        font-size: 0.9rem;
+      }
+    }
+
+    /* Add this to make the favicon white */
+    link[rel="icon"] {
+      filter: brightness(0) invert(1);
+    }
+  </style>
+</head>
+<body>
+  <!-- Loading Overlay -->
+  <div class="loading-overlay">
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- Page Transition -->
+  <div class="page-transition"></div>
+
+  <!-- Back to Top Button -->
+  <div class="back-to-top">
+    <i class="bi bi-arrow-up"></i>
+  </div>
+
+  <!-- Scroll Progress Bar -->
+  <div class="scroll-progress-container">
+    <div class="scroll-progress-bar"></div>
+  </div>
+
+  <!-- Navbar -->
+  <div class="navbar navbar-pdp w-nav"
+       data-animation="default"
+       data-easing="ease-out-expo"
+       data-easing2="ease-in-out-expo"
+       data-collapse="all"
+       data-no-scroll="1"
+       data-duration="1000"
+       data-doc-height="1"
+       role="banner">
+    <a href="/" class="brand w-nav-brand w--current">
+      <span class="logo-text">Blaze x Blazz</span>
+    </a>
+    <div id="menu" class="menu-button w-nav-button">
+      <div class="line-1"></div>
+      <div class="line-2"></div>
+    </div>
+    <nav role="navigation" class="nav-menu w-nav-menu" style="background:#fff;">
+      <div class="menu-title">
+        <h1 class="heading-nav">MENU</h1>
+      </div>
+      <div class="nav-items w-clearfix">
+        <a href="index.html#products" class="button-2 w-button banana-link">Profitez-en vite !</a>
+        <a href="coming-soon.html" class="button-2 w-button Nouvelle">Nouvelle Arrivée</a>
+      </div>
+      <div class="nav-items-2">
+        <a href="about.html" class="button-3 w-button">À Propos</a>
+        <a href="questions.html" class="button-3 w-button">Questions ?</a>
+        <a href="contact.html" class="button-3 w-button">Contact</a>
+      </div>
+    </nav>
+  </div>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="faq-container">
+      <h2 class="faq-title">Questions Fréquentes</h2>
+      
+      <div class="faq-search">
+        <i class="bi bi-search"></i>
+        <input type="text" placeholder="Rechercher une question..." id="faq-search">
+          </div>
+
+      <div class="faq-categories">
+        <button class="faq-category-btn active" data-category="all">Tout</button>
+        <button class="faq-category-btn" data-category="commandes">Commandes</button>
+        <button class="faq-category-btn" data-category="livraison">Livraison</button>
+        <button class="faq-category-btn" data-category="paiement">Paiement</button>
+        <button class="faq-category-btn" data-category="retours">Retours</button>
+        </div>
+
+      <div class="faq-category" data-category="commandes">
+        <h3 class="faq-category-title">Commandes</h3>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Comment passer une commande ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Pour passer une commande, suivez ces étapes simples :
+            <ol>
+              <li>Parcourez notre collection et sélectionnez les articles souhaités</li>
+              <li>Ajoutez-les à votre panier en cliquant sur "Ajouter au panier"</li>
+              <li>Cliquez sur l'icône du panier pour passer à la caisse</li>
+              <li>Remplissez vos informations de livraison</li>
+              <li>Confirmez votre commande</li>
+            </ol>
+            Vous recevrez un email de confirmation avec les détails de votre commande.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Comment modifier ou annuler une commande ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Pour modifier ou annuler une commande :
+            <ul>
+              <li>Contactez notre service client dans les 2 heures suivant votre commande</li>
+              <li>Précisez votre numéro de commande</li>
+              <li>Indiquez les modifications souhaitées</li>
+            </ul>
+            Note : Les commandes déjà en préparation ne peuvent plus être modifiées.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-category" data-category="livraison">
+        <h3 class="faq-category-title">Livraison</h3>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            Quels sont les délais de livraison ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Nos délais de livraison standards sont :
+            <ul>
+              <li>Casablanca : 2-3 jours ouvrés</li>
+              <li>Autres villes : 3-5 jours ouvrés</li>
+            </ul>
+            La livraison est gratuite pour toutes les commandes. Vous recevrez un SMS avec le numéro de suivi dès l'expédition.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-category" data-category="paiement">
+        <h3 class="faq-category-title">Paiement</h3>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            Quels moyens de paiement acceptez-vous ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Nous acceptons actuellement :
+            <ul>
+              <li>Paiement à la livraison (espèces)</li>
+              <li>Paiement à la livraison (carte bancaire)</li>
+            </ul>
+            Le paiement se fait uniquement lors de la réception de votre commande.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Comment fonctionnent les réductions ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Nos réductions progressives s'appliquent automatiquement :
+            <ul>
+              <li>10% de réduction sur 2 articles</li>
+              <li>15% de réduction sur 3 articles</li>
+              <li>20% de réduction sur 4 articles ou plus</li>
+            </ul>
+            Ces réductions sont cumulables avec la livraison gratuite.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-category" data-category="retours">
+        <h3 class="faq-category-title">Retours</h3>
+        
+        <div class="faq-item">
+          <div class="faq-question">
+            Comment retourner un article ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Pour retourner un article :
+            <ol>
+              <li>Contactez notre service client dans les 14 jours</li>
+              <li>Retournez l'article dans son état d'origine</li>
+              <li>Incluez le bon de retour fourni</li>
+              <li>Le remboursement sera effectué sous 5 jours ouvrés</li>
+            </ol>
+            Les articles doivent être dans leur état d'origine avec leurs étiquettes.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">
+            Quels sont les délais de remboursement ?
+            <i class="bi bi-chevron-down faq-icon"></i>
+          </div>
+          <div class="faq-answer">
+            Les remboursements sont traités dans les délais suivants :
+            <ul>
+              <li>Vérification de l'article : 2-3 jours ouvrés</li>
+              <li>Traitement du remboursement : 5 jours ouvrés maximum</li>
+              <li>Crédit sur votre compte : selon votre banque</li>
+            </ul>
+            Vous recevrez un email de confirmation à chaque étape.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-logo-container">
+        <div class="footer-logo">Blaze x Blazz</div>
+        <p class="footer-text">
+          Votre destination pour des vêtements de qualité et un style unique. Découvrez notre collection exclusive.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="social-link"><i class="bi bi-tiktok"></i></a>
+        </div>
+      </div>
+      
+      <div class="footer-columns-container">
+        <div class="footer-column">
+          <h3 class="footer-title">Liens Rapides</h3>
+          <div class="footer-links">
+            <a href="/#products" class="footer-link">Nouvelle Arrivage</a>
+            <a href="/#best-sellers" class="footer-link">Best Sellers</a>
+            <a href="/about" class="footer-link">À Propos</a>
+            <a href="/contact" class="footer-link">Contact</a>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-title">Contact</h3>
+          <div class="footer-contact">
+            <div class="contact-item">
+              <i class="bi bi-geo-alt contact-icon"></i>
+              <span>Casablanca, Maroc</span>
+            </div>
+            <div class="contact-item">
+              <i class="bi bi-telephone contact-icon"></i>
+              <span>+212 6XX-XXXXXX</span>
+            </div>
+            <div class="contact-item">
+              <i class="bi bi-envelope contact-icon"></i>
+              <span>contact@blazexblazz.com</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="footer-column">
+          <h3 class="footer-title">Rejoignez la Famille Blaze</h3>
+          <p class="footer-text">
+            Inscrivez-vous pour recevoir en avant-première nos nouvelles collections et bénéficier de réductions exclusives jusqu'à 20% sur vos achats.
+          </p>
+          <form class="signup-form" id="footer-signup-form">
+            <input type="email" placeholder="Votre adresse e-mail" required>
+            <button type="submit">Rejoindre</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p class="footer-bottom-text">
+        © 2025 Blaze x Blazz. Tous droits réservés.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Webflow JS + Dependencies -->
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.5.1.min.dc5e7f18c8.js"></script>
+  <script src="https://assets-global.website-files.com/61defec4a021d8fe954c11bd/js/webflow.a08f10edb.js"></script>
+  
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  
+  <script>
+    // Initialize EmailJS
+    (function() {
+      emailjs.init("36JIFvbkCfdhcqGWq");
+    })();
+
+    // Newsletter form handling
+    document.getElementById('footer-signup-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const emailInput = this.querySelector('input[type="email"]');
+      const submitButton = this.querySelector('button');
+      const email = emailInput.value;
+
+      // Validate email
+      if (!email || !email.includes('@')) {
+        submitButton.innerHTML = '<span>Email invalide</span>';
+        submitButton.style.background = '#ff0000';
+        setTimeout(() => {
+          submitButton.innerHTML = '<span>Envoyer</span>';
+          submitButton.style.background = '';
+        }, 2000);
+        return;
+      }
+
+      // Disable button and show loading state
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span>Envoi en cours...</span>';
+
+      // Send email using EmailJS
+      emailjs.send("service_ihu1weu", "template_q1t7ctr", {
+        to_email: email,
+        from_name: "Newsletter Subscriber",
+        message: "New newsletter subscription"
+      })
+      .then(function() {
+        // Success
+        submitButton.innerHTML = '<span>Envoyé !</span>';
+        submitButton.style.background = '#4CAF50';
+        emailInput.value = '';
+        
+        setTimeout(() => {
+          submitButton.innerHTML = '<span>Envoyer</span>';
+          submitButton.disabled = false;
+          submitButton.style.background = '';
+        }, 2000);
+      })
+      .catch(function(error) {
+        // Error
+        console.error('EmailJS error:', error);
+        submitButton.innerHTML = '<span>Erreur</span>';
+        submitButton.style.background = '#ff0000';
+        
+        setTimeout(() => {
+          submitButton.innerHTML = '<span>Envoyer</span>';
+          submitButton.disabled = false;
+          submitButton.style.background = '';
+        }, 2000);
+      });
+    });
+
+    // FAQ Accordion
+    document.addEventListener('DOMContentLoaded', function() {
+      // FAQ Accordion
+      const faqQuestions = document.querySelectorAll('.faq-question');
+      
+      faqQuestions.forEach(question => {
+        question.addEventListener('click', function() {
+          const faqItem = this.parentElement;
+        const isActive = faqItem.classList.contains('active');
+        
+          // Close all other items
+          document.querySelectorAll('.faq-item.active').forEach(item => {
+            if (item !== faqItem) {
+          item.classList.remove('active');
+              const answer = item.querySelector('.faq-answer');
+              answer.style.maxHeight = '0';
+              answer.style.padding = '0 25px';
+            }
+        });
+        
+          // Toggle current item
+          faqItem.classList.toggle('active');
+          const answer = faqItem.querySelector('.faq-answer');
+          
+        if (!isActive) {
+            answer.style.maxHeight = answer.scrollHeight + 'px';
+            answer.style.padding = '25px';
+            
+            // Smooth scroll to the question
+            const offset = 100;
+            const topPos = faqItem.getBoundingClientRect().top + window.pageYOffset - offset;
+            window.scrollTo({
+              top: topPos,
+              behavior: 'smooth'
+            });
+          } else {
+            answer.style.maxHeight = '0';
+            answer.style.padding = '0 25px';
+          }
+        });
+      });
+
+      // FAQ Search Functionality
+      const faqSearch = document.getElementById('faq-search');
+      const faqItems = document.querySelectorAll('.faq-item');
+
+      faqSearch.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        
+        faqItems.forEach(item => {
+          const question = item.querySelector('.faq-question').textContent.toLowerCase();
+          const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+          
+          if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+            item.style.display = 'block';
+          } else {
+            item.style.display = 'none';
+          }
+        });
+      });
+
+      // FAQ Category Filtering
+      const categoryButtons = document.querySelectorAll('.faq-category-btn');
+      const faqCategories = document.querySelectorAll('.faq-category');
+
+      categoryButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons
+          categoryButtons.forEach(btn => btn.classList.remove('active'));
+          // Add active class to clicked button
+          button.classList.add('active');
+          
+          const category = button.dataset.category;
+          
+          if (category === 'all') {
+            faqCategories.forEach(cat => cat.style.display = 'block');
+          } else {
+            faqCategories.forEach(cat => {
+              if (cat.dataset.category === category) {
+                cat.style.display = 'block';
+              } else {
+                cat.style.display = 'none';
+              }
+            });
+          }
+        });
+      });
+    });
+
+    // Loading Animation
+    window.addEventListener('load', () => {
+      const loader = document.querySelector('.loading-overlay');
+      loader.style.opacity = '0';
+      setTimeout(() => {
+        loader.style.display = 'none';
+      }, 500);
+    });
+
+    // Back to Top Button
+    const backToTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.pageYOffset > 300) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+
+    // Scroll Progress Bar
+    const progressBar = document.querySelector('.scroll-progress-bar');
+    window.addEventListener('scroll', () => {
+      const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (window.scrollY / windowHeight) * 100;
+      progressBar.style.height = `${scrolled}%`;
+    });
+
+    // Page Transitions
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          const transition = document.querySelector('.page-transition');
+          transition.classList.add('active');
+          setTimeout(() => {
+            target.scrollIntoView({
+              behavior: 'smooth'
+            });
+            transition.classList.remove('active');
+          }, 600);
+        }
+      });
+    });
+
+    // Intersection Observer for Animations
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Observe FAQ items
+    document.querySelectorAll('.faq-item').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Enhanced scroll handling
+    const navbar = document.querySelector('.navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 100) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+
+      lastScroll = currentScroll;
+    });
+  </script>
+</body>
+</html> 
